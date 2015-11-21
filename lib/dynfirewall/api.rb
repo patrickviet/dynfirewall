@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'json'
 require 'dynfirewall/config'
 require 'cassandra'
+require 'bcrypt'
 
 module DynFirewall
   class API < Sinatra::Base
@@ -77,6 +78,32 @@ module DynFirewall
       @cass.execute("INSERT INTO fwentry (tag,env,rules,comment) VALUES('tmp_client_add_#{ip}_#{clientenv}','#{clientenv}','-A INPUT -s #{ip} -j ACCEPT','#{Time.new}') USING TTL 86400")
 
       "OK"
+    end
+
+    get '/' do
+      addr = (@env.has_key?'HTTP_X_FORWARDED_FOR') ? @env['HTTP_X_FORWARDED_FOR'] : @env['REMOTE_ADDR']
+      erb :index_form, :locals => {:addr => addr}
+    end
+
+    post '/' do
+      addr = (@env.has_key?'HTTP_X_FORWARDED_FOR') ? @env['HTTP_X_FORWARDED_FOR'] : @env['REMOTE_ADDR']
+      username,password = params.values_at(:username, :password)
+
+      # passwords are in bcrypt format.
+      q = @cass.execute(@cass.prepare("select password,rules,ttl FROM users WHERE username = ?"), arguments: [username])
+      if q.count > 0
+        r = q.first
+        if BCrypt::Password.new(r['password']) == password
+          ttl = r['ttl'] || 86400
+          clientenv = 'production' #FIXME: add multi env support
+          @cass.execute("INSERT INTO fwentry (tag,env,rules,comment,username) VALUES('webadd_#{addr}','#{clientenv}','-A INPUT -s #{addr} -j ACCEPT','#{Time.new} TTL #{ttl}','#{username}') USING TTL #{ttl}")
+          "Added IP #{addr} for #{ttl} secs"  
+        else
+          halt 403, "username error"
+        end
+      else
+        halt 403, "username error"
+      end
     end
   end
 end

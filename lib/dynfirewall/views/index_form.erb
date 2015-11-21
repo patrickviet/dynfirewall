@@ -1,0 +1,37 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+</head>
+<h1>Dynfirewall</h1>
+<p>Your IP: <%= addr %></p>
+<form action="/" id="addform">
+<p><label for="username">Username</label> <input type="text" name="username"></p>
+<p><label for="password">Password</label> <input type="password" name="password"></p>
+<p><input type="submit" value="Add my IP"></p>
+</form>
+<div id="result"></div>
+
+<script language="JavaScript">
+
+// Ajax submit handler
+// Example from http://api.jquery.com/jquery.post/
+
+$("#addform").submit(function(event) {
+
+	event.preventDefault();
+
+	var $form = $(this),
+		username = $form.find("input[name='username']").val(),
+		password = $form.find("input[name='password']").val(),
+		url = $form.attr("action");
+
+
+	var posting = $.post( url, { username: username, password: password } );
+
+	posting.done(function(data) {
+		$("#result").empty().append(data);
+	});
+});
+
+</script>
+</html>

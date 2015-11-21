@@ -22,4 +22,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'cassandra-driver',   '~> 2.0.1'
   s.add_runtime_dependency 'eventmachine', '~> 1.0.7'
   s.add_runtime_dependency 'thin', '~> 1.6.3'
+  s.add_runtime_dependency 'bcrypt', '~> 3.1.10'
 end
