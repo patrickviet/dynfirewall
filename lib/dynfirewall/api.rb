@@ -99,10 +99,10 @@ module DynFirewall
           @cass.execute("INSERT INTO fwentry (tag,env,rules,comment,username) VALUES('webadd_#{addr}','#{clientenv}','-A INPUT -s #{addr} -j ACCEPT','#{Time.new} TTL #{ttl}','#{username}') USING TTL #{ttl}")
           "Added IP #{addr} for #{ttl} secs"  
         else
-          halt 403, "username error"
+          "username error"
         end
       else
-        halt 403, "username error"
+        "username error"
       end
     end
   end
