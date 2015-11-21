@@ -74,7 +74,7 @@ module DynFirewall
       halt 500, "Incorrect IP format" unless ip =~ /^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/
       halt 500, "incorrect IP format" unless (ip.split('.').keep_if{|n| n.to_i >= 0 and n.to_i <= 255 }).count == 4
 
-      @cass.execute("INSERT INTO fwentry (tag,env,rules,comment) VALUES('tmp_client_add_#{ip}_#{srvenv}','#{srvenv}','-A INPUT -s #{ip} -j ACCEPT','#{Time.new}') USING TTL 86400")
+      @cass.execute("INSERT INTO fwentry (tag,env,rules,comment) VALUES('tmp_client_add_#{ip}_#{clientenv}','#{clientenv}','-A INPUT -s #{ip} -j ACCEPT','#{Time.new}') USING TTL 86400")
 
       "OK"
     end
