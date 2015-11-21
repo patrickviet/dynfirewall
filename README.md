@@ -8,7 +8,7 @@ General structure: you run the API, accessible via https, potentially load balan
 
 Each node runs dynfw_node, which will register itself, and fetch the rules.
 
-
+What the node daemon actually does is take the /etc/iptables.rules file (which might be loaded at startup...), look for ## DYNFW REPLACE ##, put its own generated rules in there, write them to /var/run/dynfw/iptables.rules, and run an ```iptables-restore < /var/run/dynfw/iptables.rules``` command.
 
 
 Modules:
@@ -146,7 +146,10 @@ Runit file: /etc/service/runit/dynfw_api/run
 exec chpst -u dynfw rackup -s thin -o 0.0.0.0 -p 12345 $(dynfw_filepath config.ru)
 ```
 
-NGINX Config. You'll need a real valid SSL cert. And have this publically accessible (or at least to the IPs you'd like to be able to authorize themselves...)
+NGINX Config for API
+--------------------
+
+You'll need a real valid SSL cert. And have this publically accessible (or at least to the IPs you'd like to be able to authorize themselves...)
 ```
 server {
   listen 443 ssl;
@@ -177,8 +180,11 @@ exec dynfw_node
 CLI
 ---
 
-For now just a command as root:
+For now the CLI only supports a single command as root:
 ```# dynfw addip```
 
-adds your ip (from ssh env)
+And ... it adds your ip (from ssh env)
+
+Also, you can run ```dynfw addip:1.2.3.4``` to manually specify.
+
 
