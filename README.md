@@ -17,7 +17,7 @@ Modules:
 - CLI
 
 Build gem:
-```gem build dynfirewall.gemspec`
+```gem build dynfirewall.gemspec```
 
 Install gem:
 ```gem install dynfirewall-x.y.z.gem```
