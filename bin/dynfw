@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'dynfirewall'
+
+cli = DynFirewall::CLI.new
+cli.run!
+
