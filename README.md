@@ -190,3 +190,36 @@ And ... it adds your ip (from ssh env)
 Also, you can run ```dynfw addip:1.2.3.4``` to manually specify.
 
 
+USERS TO BE DYNAMICALLY ADDED
+-----------------------------
+
+Update in 0.0.10
+
+now you can use https://dynfirewall.xyz.net/
+And add your IP for a determined amount of time.
+
+How to populate?
+
+Generate your hash.
+
+```
+$ irb
+irb(main):001:0> require 'bcrypt'
+=> true
+irb(main):002:0> BCrypt::Password.create 'somepassword'
+=> "$2a$10$fTqhlJUKU9fYa0E6dqUJ/OT/qP3bqdaEeigk8Ht96IKebAcR8/5XW"
+irb(main):003:0> quit
+```
+
+Then put it in Cassandra.
+```
+# cqlsh -k dynfirewall
+Connected to DynFirewall at 127.0.0.1:9042.
+[cqlsh 5.0.1 | Cassandra 2.1.11 | CQL spec 3.2.1 | Native protocol v3]
+Use HELP for help.
+
+cqlsh:dynfirewall> insert into users (username,password) VALUES('myuser','$2a$10$fTqhlJUKU9fYa0E6dqUJ/OT/qP3bqdaEeigk8Ht96IKebAcR8/5XW');
+cqlsh:dynfirewall> quit
+```
+
+Then just login with that user. It will add its IP address for a default 24hrs.
