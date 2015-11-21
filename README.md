@@ -170,6 +170,8 @@ Node/Daemon
 
 It runs as root... 'cause we're manipulating IPtables here, right?
 
+FIXME: have it run as a user. Actually the code runs ```cat /var/run/dynfw/iptables.rules | sudo /sbin/iptables```, and the chef recipe adds a sudoers file. So I must have considered it at some point. Will debug/repair at some point.
+
 File: /etc/service/dynfw_node/run
 ```
 #!/bin/sh
