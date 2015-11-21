@@ -56,6 +56,7 @@ module DynFirewall
       rules_raw = JSON.parse(c.body_str)
       rules_raw.sort{|a,b| a['tag'] <=> b['tag'] }.each do |rule_line|
         tag,rules,comment = rule_line.values_at('tag','rules','comment')
+        comment = "" if comment.nil?
         build_conf << ("# TAG: #{tag}, COMMENT: " + comment.gsub(/\r\n/,' '))
         rules.gsub(/\r/,"\n").split("\n").each do |rule|
           next if rule == ''
