@@ -62,9 +62,10 @@ module DynFirewall
       #params = JSON.parse(request.body.read)
 
       addr = (@env.has_key?'HTTP_X_FORWARDED_FOR') ? @env['HTTP_X_FORWARDED_FOR'] : @env['REMOTE_ADDR'] 
+      ttl = @config.conf['api']['default_insert_ttl'] || '3600'
 
       # Just a quick and dirty server add
-      @cass.execute("INSERT INTO fwentry (tag,env,rules,comment) VALUES('dirty_add_#{hostname}_#{srvenv}','#{srvenv}','-A INPUT -s #{addr} -j ACCEPT','#{Time.new}') USING TTL 3600")
+      @cass.execute("INSERT INTO fwentry (tag,env,rules,comment) VALUES('dirty_add_#{hostname}_#{srvenv}','#{srvenv}','-A INPUT -s #{addr} -j ACCEPT','#{Time.new}') USING TTL #{ttl}")
 
       "OK"
     end
@@ -77,6 +78,12 @@ module DynFirewall
 
       @cass.execute("INSERT INTO fwentry (tag,env,rules,comment) VALUES('tmp_client_add_#{ip}_#{clientenv}','#{clientenv}','-A INPUT -s #{ip} -j ACCEPT','#{Time.new}') USING TTL 86400")
 
+      "OK"
+    end
+
+    get '/test_cassandra_insert' do
+      protected! if @env['REMOTE_ADDR'] != '127.0.0.1' or (@env.has_key?'HTTP_X_FORWARDED_FOR' and @env['HTTP_X_FORWARDED_FOR'] != '127.0.0.1')
+      @cass.execute("INSERT INTO test_cassandra_insert (data) VALUES('#{Time.new}') TTL 10")
       "OK"
     end
 
