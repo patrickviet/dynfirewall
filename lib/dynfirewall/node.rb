@@ -39,7 +39,7 @@ module DynFirewall
       c.http_auth_types = :basic
       c.username = @config.conf['api']['http_user']
       c.password = @config.conf['api']['http_password']
-      c.set(:timeout, 10) # a ten sec timeout should be plenty. No need to put it as a parameter
+      c.timeout = 10 # a ten sec timeout should be plenty. No need to put it as a parameter
       c.put((@config.conf['node']['keepalive_delay'].to_i * 2).to_s)
     end
 
@@ -48,7 +48,7 @@ module DynFirewall
       c.http_auth_types = :basic
       c.username = @config.conf['api']['http_user']
       c.password = @config.conf['api']['http_password']
-      c.set(:timeout, 20) # a 20 sec timeout should be plenty. No need to put it as a parameter
+      c.timeout = 20 # a 20 sec timeout should be plenty. No need to put it as a parameter
 
       c.url = @config.conf['global']['endpoint'] + '/rules/' + @config.conf['node']['env']
       c.perform
