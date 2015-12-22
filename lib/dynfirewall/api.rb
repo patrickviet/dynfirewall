@@ -83,7 +83,7 @@ module DynFirewall
 
     get '/test_cassandra_insert' do
       protected! if @env['REMOTE_ADDR'] != '127.0.0.1' or (@env.has_key?'HTTP_X_FORWARDED_FOR' and @env['HTTP_X_FORWARDED_FOR'] != '127.0.0.1')
-      @cass.execute("INSERT INTO test_cassandra_insert (data) VALUES('#{Time.new}') TTL 10")
+      @cass.execute("INSERT INTO test_cassandra_insert (data) VALUES('#{Time.new}') USING TTL 10")
       "OK"
     end
 
